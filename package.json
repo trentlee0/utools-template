@@ -1,0 +1,9 @@
+{
+	"scripts": {
+		"build": "tsc && node build.js"
+	},
+	"devDependencies": {
+		"@types/node": "^18.11.7",
+		"utools-api-types": "^3.0.0"
+	}
+}

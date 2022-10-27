@@ -1,0 +1,10 @@
+{
+  "pluginName": "Seach",
+  "author": "Trent0",
+  "homepage": "https://github.com",
+  "description": "一些快捷操作",
+  "version": "1.0.0",
+  "logo": "icon/logo.png",
+  "preload": "preload.js",
+  "features": []
+}

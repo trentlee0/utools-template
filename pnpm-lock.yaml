@@ -1,0 +1,19 @@
+lockfileVersion: 5.4
+
+specifiers:
+  '@types/node': ^18.11.7
+  utools-api-types: ^3.0.0
+
+devDependencies:
+  '@types/node': 18.11.7
+  utools-api-types: 3.0.0
+
+packages:
+
+  /@types/node/18.11.7:
+    resolution: {integrity: sha512-LhFTglglr63mNXUSRYD8A+ZAIu5sFqNJ4Y2fPuY7UlrySJH87rRRlhtVmMHplmfk5WkoJGmDjE9oiTfyX94CpQ==}
+    dev: true
+
+  /utools-api-types/3.0.0:
+    resolution: {integrity: sha512-KJYytaX/cnxRTm+fBKeDAV6PhE1Emrv4bZm/6pigVhxEM4StAy8UFGyo22bVARSRIUUxbEdtWIo6O7qmEGnv5A==}
+    dev: true
