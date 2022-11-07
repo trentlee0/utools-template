@@ -2,19 +2,18 @@
   "include": [
     "src/**/*"
   ],
-  "exclude": [
-    "node_modules"
-  ],
   "compilerOptions": {
-    "target": "ES5",
+    "target": "ES6",
     "module": "CommonJS",
     "lib": [
-      "ES6"
+      "ES6",
+      "DOM"
     ],
+    "removeComments": true,
     "outDir": "./dist",
     "types": [
-      "utools-api-types",
-      "@types/node"
+      "@types/node",
+      "utools-api-types"
     ]
   }
 }

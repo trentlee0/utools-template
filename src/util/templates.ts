@@ -1,7 +1,15 @@
-const target: { templates: object, states: any[] } = {
-  templates: {},
-  states: []
+type Result = {
+  templates: object
+  normalListStates: any[]
+  dynamicListStates: any[]
 }
+
+const target: Result = {
+  templates: {},
+  normalListStates: [],
+  dynamicListStates: []
+}
+
 
 interface SetItem {
   title: string
@@ -12,6 +20,9 @@ interface SetItem {
 interface Feature extends SetItem {
   code: string
 }
+
+
+// NoneTemplate
 
 export interface NoneTemplate extends Feature {
   action: () => void
@@ -29,23 +40,24 @@ export function noneTemplate(items: Array<NoneTemplate>) {
 }
 
 
-interface SearchItem extends SetItem {
+// NormalListTemplate
+
+interface NormalSearchItem extends SetItem {
   action: () => void
 }
 
-export interface SearchListTemplate extends Feature {
-  searchList: Array<SearchItem>
+export interface NormalListTemplate extends Feature {
+  searchList: Array<NormalSearchItem>
   searchPlaceholder?: string
 }
 
-export function searchListTemplate(items: Array<SearchListTemplate>) {
-  items.forEach(item => {
-    target.states.push(item.searchList)
+export function normalListTemplate(items: Array<NormalListTemplate>) {
+  for (const item of items) {
+    target.normalListStates.push(item.searchList)
     target.templates[item.code] = {
       mode: 'list',
       args: {
         enter: (action, callbackSetList) => {
-
           callbackSetList(item.searchList)
         },
         search: (action, searchWord, callbackSetList) => {
@@ -63,30 +75,33 @@ export function searchListTemplate(items: Array<SearchListTemplate>) {
         placeholder: item.searchPlaceholder
       }
     }
-  })
+  }
 }
 
 
-export interface EnterListTemplate extends Feature {
+// DynamicListTemplate
+
+export interface DynamicListTemplate extends Feature {
   onlyEnterOnce: boolean
   onEnter: (render: (setList: SetItem[]) => void) => void
-  onSelectItem: (item: SetItem) => void
+  onSelect: (item: SetItem) => void
   searchPlaceholder?: string
 }
 
-export function enterSearchListTemplate(items: Array<EnterListTemplate>) {
+export function dynamicListTemplate(items: Array<DynamicListTemplate>) {
   let n = items.length
-  target.states = new Array(n).fill([], 0, n)
-  items.forEach((item, index) => {
+  target.dynamicListStates = new Array(n).fill([], 0, n)
+  for (let i = 0; i < n; i++) {
+    const item = items[i]
     target.templates[item.code] = {
       mode: 'list',
       args: {
         enter: (action, callbackSetList) => {
-          if (item.onlyEnterOnce && Object.entries(target.states[index]).length) {
-            callbackSetList(target.states[index])
+          if (item.onlyEnterOnce && Object.entries(target.dynamicListStates[i]).length) {
+            callbackSetList(target.dynamicListStates[i])
           } else {
-            item.onEnter((setList) => {
-              target.states[index] = setList
+            item.onEnter(setList => {
+              target.dynamicListStates[i] = setList
               callbackSetList(setList)
             })
           }
@@ -94,21 +109,24 @@ export function enterSearchListTemplate(items: Array<EnterListTemplate>) {
         search: (action, searchWord, callbackSetList) => {
           searchWord = searchWord.toLowerCase()
           callbackSetList(
-              target.states[index].filter(({title, description}) =>
+              target.dynamicListStates[i].filter(({title, description}) =>
                   title.toLowerCase().indexOf(searchWord) !== -1 ||
                   description.toLowerCase().indexOf(searchWord) !== -1
               )
           )
         },
         select: (action, itemData) => {
-          item.onSelectItem(itemData)
+          item.onSelect(itemData)
         },
         placeholder: item.searchPlaceholder
       }
     }
-  })
+  }
 }
 
 
-export const buildTemplates = () => target.templates
-export const getSearchListStates = () => target.states
+export const build = () => target.templates
+export const states = () => ({
+  normalList: target.normalListStates,
+  dynamicList: target.dynamicListStates,
+})

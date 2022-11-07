@@ -1,8 +1,8 @@
-import {noneTemplate, enterSearchListTemplate, buildTemplates} from './util/build-template'
-import {list, none} from './config'
+import * as templates from './util/templates'
+import * as config from './config'
 
-noneTemplate(none)
-enterSearchListTemplate(list)
+templates.noneTemplate(config.none)
+templates.dynamicListTemplate(config.list)
 
 // @ts-ignore
-window.exports = buildTemplates()
+window.exports = templates.build()

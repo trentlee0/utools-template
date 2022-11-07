@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"build": "tsc && node build.js"
+		"build": "tsc && node script/build.js"
 	},
 	"devDependencies": {
 		"@types/node": "^18.11.7",
