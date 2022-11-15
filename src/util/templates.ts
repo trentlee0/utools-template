@@ -48,7 +48,8 @@ interface NormalSearchItem extends SetItem {
 
 export interface NormalListTemplate extends Feature {
   searchList: Array<NormalSearchItem>
-  searchPlaceholder?: string
+  searchPlaceholder?: string,
+  isSearchDesc?: boolean
 }
 
 export function normalListTemplate(items: Array<NormalListTemplate>) {
@@ -64,8 +65,8 @@ export function normalListTemplate(items: Array<NormalListTemplate>) {
           searchWord = searchWord.toLowerCase()
           callbackSetList(
               item.searchList.filter(({title, description}) =>
-                  title.toLowerCase().indexOf(searchWord) !== -1 ||
-                  description.toLowerCase().indexOf(searchWord) !== -1
+                  title.toLowerCase().includes(searchWord) ||
+                  (item.isSearchDesc && description.toLowerCase().includes(searchWord))
               )
           )
         },
@@ -85,7 +86,8 @@ export interface DynamicListTemplate extends Feature {
   onlyEnterOnce: boolean
   onEnter: (render: (setList: SetItem[]) => void) => void
   onSelect: (item: SetItem) => void
-  searchPlaceholder?: string
+  searchPlaceholder?: string,
+  isSearchDesc?: boolean
 }
 
 export function dynamicListTemplate(items: Array<DynamicListTemplate>) {
@@ -110,8 +112,8 @@ export function dynamicListTemplate(items: Array<DynamicListTemplate>) {
           searchWord = searchWord.toLowerCase()
           callbackSetList(
               target.dynamicListStates[i].filter(({title, description}) =>
-                  title.toLowerCase().indexOf(searchWord) !== -1 ||
-                  description.toLowerCase().indexOf(searchWord) !== -1
+                  title.toLowerCase().includes(searchWord) ||
+                  (item.isSearchDesc && description.toLowerCase().includes(searchWord))
               )
           )
         },
