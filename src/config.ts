@@ -1,29 +1,33 @@
-import {NoneTemplate, DynamicListTemplate} from './util/templates'
+import {NoneTemplate, MutableListTemplate} from './util/templates'
 
 export const none: Array<NoneTemplate> = [
   {
-    code: 'search-browser',
+    code: 'open-browser',
     title: 'Open Browser',
     description: '打开浏览器',
-    action: () => {
+    handle: () => {
       console.log('Open Browser')
     }
   }
 ]
 
-export const list: Array<DynamicListTemplate> = [
+export const list: Array<MutableListTemplate> = [
   {
     code: 'search-search',
     title: 'Search',
     description: '搜索',
-    onlyEnterOnce: true,
-    onEnter: (render) => {
+    data: () => ({
+      count: 0
+    }),
+    onEnter(render) {
+      this.count++
       render([{
-        title: '搜索结果项',
+        title: '进入次数' + this.count,
         description: '搜索结果项',
       }])
     },
-    onSelect: (item) => {
+    onSelect(item) {
+      this.count = 0
       console.log(item)
       utools.hideMainWindow()
     }
