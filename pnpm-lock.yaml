@@ -2,16 +2,24 @@ lockfileVersion: 5.4
 
 specifiers:
   '@types/node': ^18.11.7
+  prettier: ^2.8.8
   utools-api-types: ^3.0.0
 
 devDependencies:
   '@types/node': 18.11.7
+  prettier: 2.8.8
   utools-api-types: 3.0.0
 
 packages:
 
   /@types/node/18.11.7:
     resolution: {integrity: sha512-LhFTglglr63mNXUSRYD8A+ZAIu5sFqNJ4Y2fPuY7UlrySJH87rRRlhtVmMHplmfk5WkoJGmDjE9oiTfyX94CpQ==}
+    dev: true
+
+  /prettier/2.8.8:
+    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
     dev: true
 
   /utools-api-types/3.0.0:

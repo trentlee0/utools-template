@@ -4,7 +4,7 @@
   "homepage": "https://github.com",
   "description": "一些快捷操作",
   "version": "1.0.0",
-  "logo": "icon/logo.png",
+  "logo": "logo.png",
   "preload": "preload.js",
   "features": []
 }

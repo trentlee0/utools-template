@@ -1,9 +1,10 @@
 {
-	"scripts": {
-		"build": "node script/before-build.js && tsc && node script/build.js"
-	},
-	"devDependencies": {
-		"@types/node": "^18.11.7",
-		"utools-api-types": "^3.0.0"
-	}
+  "scripts": {
+    "build": "node script/pre-build.js && tsc && node script/build.js"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.7",
+    "prettier": "^2.8.8",
+    "utools-api-types": "^3.0.0"
+  }
 }

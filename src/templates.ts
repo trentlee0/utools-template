@@ -49,7 +49,7 @@ export interface NoneTemplate extends Feature {
 }
 
 function noneTemplate(templatesHolder: TemplatesHolder, item: NoneTemplate) {
-  const {handle} = item
+  const { handle } = item
   templatesHolder[item.code] = {
     mode: 'none',
     args: {
@@ -74,7 +74,7 @@ export interface FixedListTemplate extends Feature {
 function fixedListTemplate(templatesHolder: TemplatesHolder, item: FixedListTemplate) {
   const set$state = (list: SetItem[]) => Reflect.set(item, '$state', list)
 
-  const {searchList, descSearchable, placeholder} = item
+  const { searchList, descSearchable, placeholder } = item
   set$state(searchList)
 
   templatesHolder[item.code] = {
@@ -84,10 +84,10 @@ function fixedListTemplate(templatesHolder: TemplatesHolder, item: FixedListTemp
       search: (action, searchWord, callbackSetList) => {
         searchWord = searchWord.toLowerCase()
         callbackSetList(
-            searchList.filter(({title, description}) =>
-                title.toLowerCase().includes(searchWord) ||
-                (descSearchable && description.toLowerCase().includes(searchWord))
-            )
+          searchList.filter(({ title, description }) =>
+            title.toLowerCase().includes(searchWord) ||
+            (descSearchable && description.toLowerCase().includes(searchWord))
+          )
         )
       },
       select: (action, itemData: FixedSearchItem) => itemData.handle(),
@@ -115,7 +115,7 @@ function mutableListTemplate(templatesHolder: TemplatesHolder, item: MutableList
   const set$state = (list: SetItem[]) => Reflect.set(data, '$state', list)
   const get$state = (): SetItem[] => Reflect.get(data, '$state')
 
-  const {descSearchable, onlyEnterOnce, placeholder} = item
+  const { descSearchable, onlyEnterOnce, placeholder } = item
   const onEnter: EnterCallback = bind(item.onEnter, data)
   const onSelect: SelectCallback = bind(item.onSelect, data)
   templatesHolder[item.code] = {
@@ -134,10 +134,10 @@ function mutableListTemplate(templatesHolder: TemplatesHolder, item: MutableList
       search: (action, searchWord, callbackSetList) => {
         searchWord = searchWord.toLowerCase()
         callbackSetList(
-            get$state().filter(({title, description}) =>
-                title.toLowerCase().includes(searchWord) ||
-                (descSearchable && description.toLowerCase().includes(searchWord))
-            )
+          get$state().filter(({ title, description }) =>
+            title.toLowerCase().includes(searchWord) ||
+            (descSearchable && description.toLowerCase().includes(searchWord))
+          )
         )
       },
       select: (action, itemData) => onSelect(itemData),

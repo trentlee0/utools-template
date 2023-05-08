@@ -1,4 +1,4 @@
-import {NoneTemplate, MutableListTemplate} from './util/templates'
+import { NoneTemplate, MutableListTemplate } from './templates'
 
 export const none: Array<NoneTemplate> = [
   {
@@ -23,7 +23,7 @@ export const list: Array<MutableListTemplate> = [
       this.count++
       render([{
         title: '进入次数' + this.count,
-        description: '搜索结果项',
+        description: '搜索结果项'
       }])
     },
     onSelect(item) {
