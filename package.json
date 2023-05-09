@@ -1,6 +1,6 @@
 {
   "name": "utools-utils",
-  "description": "uTools utils",
+  "description": "Common utils for uTools",
   "version": "1.0.0",
   "main": "index.js",
   "author": "Trent0",
