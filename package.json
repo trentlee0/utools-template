@@ -1,10 +1,30 @@
 {
+  "name": "utools-utils",
+  "description": "uTools utils",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Trent0",
   "scripts": {
-    "build": "node script/pre-build.js && tsc && node script/build.js"
+    "build": "rm -rf dist && tsc"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trentlee0/utools-utils.git"
+  },
+  "keywords": [
+    "utools",
+    "utils",
+    "typescript"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/trentlee0/utools-utils/issues"
+  },
+  "homepage": "https://github.com/trentlee0/utools-utils#readme",
   "devDependencies": {
-    "@types/node": "^18.11.7",
+    "@types/node": "^16.11.7",
     "prettier": "^2.8.8",
+    "typescript": "^5.0.4",
     "utools-api-types": "^3.0.0"
   }
 }

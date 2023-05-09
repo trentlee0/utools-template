@@ -1,19 +1,21 @@
 {
-  "include": [
-    "src/**/*"
-  ],
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ESNext",
     "module": "CommonJS",
     "lib": [
-      "ES6",
+      "ESNext",
       "DOM"
     ],
-    "removeComments": true,
+    "moduleResolution": "Node",
     "outDir": "./dist",
     "types": [
-      "node",
-      "utools-api-types"
-    ]
-  }
+      "utools-api-types",
+      "node"
+    ],
+    "declaration": true,
+    "strict": true
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
 }
