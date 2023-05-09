@@ -2,7 +2,7 @@
   "name": "utools-utils",
   "description": "Common utils for uTools",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "Trent0",
   "scripts": {
     "build": "rm -rf dist && tsc"
