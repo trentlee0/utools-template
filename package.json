@@ -1,7 +1,7 @@
 {
   "name": "utools-utils",
   "description": "Common utils for uTools",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "dist/index.js",
   "author": "Trent0",
   "scripts": {
