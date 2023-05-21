@@ -1,11 +1,27 @@
 {
   "name": "utools-utils",
   "description": "Common utils for uTools",
-  "version": "1.0.2",
-  "main": "dist/index.js",
+  "version": "1.0.3",
   "author": "Trent0",
   "scripts": {
     "build": "rm -rf dist && tsc"
+  },
+  "main": "dist/index.js",
+  "type": "commonjs",
+  "exports": {
+    ".": "./dist/index.js",
+    "./common": "./dist/common.js",
+    "./command": "./dist/command.js",
+    "./storage": "./dist/storage.js",
+    "./template": "./dist/templat.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "*",
+        "dist/*"
+      ]
+    }
   },
   "repository": {
     "type": "git",
