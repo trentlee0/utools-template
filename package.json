@@ -1,10 +1,11 @@
 {
   "name": "utools-utils",
-  "description": "Common utils for uTools",
-  "version": "1.0.3",
+  "description": "A common utils for uTools",
+  "version": "1.0.4",
   "author": "Trent0",
   "scripts": {
-    "build": "rm -rf dist && tsc"
+    "build": "del-cli dist && tsc",
+    "publish": "npm build && npm publish"
   },
   "main": "dist/index.js",
   "type": "commonjs",

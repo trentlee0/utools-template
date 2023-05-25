@@ -63,12 +63,12 @@ export function noneTemplate(holder: TemplatesHolder, template: NoneTemplate) {
 // ===================== ListTemplate =====================
 
 interface ListTemplate extends Template {
-  $state: Array<ListItem>
+  $state?: Array<ListItem>
   descSearchable?: boolean
   placeholder?: string
 }
 
-interface ImmutableListItem extends ListItem {
+export interface ImmutableListItem extends ListItem {
   handler: () => void
 }
 
@@ -82,6 +82,21 @@ function searchList(list: Array<ListItem>, searchWord: string, descSearchable?: 
     title.toLowerCase().includes(searchWord) ||
     (descSearchable && description?.toLowerCase().includes(searchWord))
   )
+}
+
+export function featureToListItem(feature: Feature): ListItem {
+  return {
+    title: feature.cmds[0],
+    description: feature.explain,
+    icon: feature.icon
+  }
+}
+
+export function noneToImmutableListItem(none: NoneTemplate): ImmutableListItem {
+  return {
+    ...featureToListItem(none),
+    handler: none.handler
+  }
 }
 
 export function immutableListTemplate(holder: TemplatesHolder, template: ImmutableListTemplate) {
@@ -101,13 +116,14 @@ export function immutableListTemplate(holder: TemplatesHolder, template: Immutab
   }
 }
 
-function bind<T extends Function>(fn: T, context: object): T {
+function bind<T extends Function>(fn: T, context?: object): T {
+  if (!context) return fn
   // @ts-ignore
   return (...args: any) => fn.apply(context, args)
 }
 
 export interface MutableListTemplate extends ListTemplate {
-  data: () => { [prop: string]: any }
+  data?: () => { [prop: string]: any }
   onlyEnterOnce?: boolean
   onEnter: (render: ListRenderFn) => void
   onSelect: (item: ListItem) => void
@@ -115,7 +131,7 @@ export interface MutableListTemplate extends ListTemplate {
 
 export function mutableListTemplate(holder: TemplatesHolder, template: MutableListTemplate) {
   const { descSearchable, onlyEnterOnce, placeholder } = template
-  const dataContext = template.data()
+  const dataContext = template.data?.()
   const onEnter = bind(template.onEnter, dataContext)
   const onSelect = bind(template.onSelect, dataContext)
 
