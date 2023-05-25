@@ -46,6 +46,11 @@ export async function execAppleScript(script: string, raw?: boolean) {
   return await execCommand(`osascript -e "${raw ? script : escapeQuoteMark(script)}"`)
 }
 
+export function preExecScript() {
+  utools.hideMainWindow()
+  utools.outPlugin()
+}
+
 /**
  * 运行脚本，Windows 上为 PowerShell、macOS 上为 AppleScript，Linux 上为 Shell
  *
@@ -53,8 +58,7 @@ export async function execAppleScript(script: string, raw?: boolean) {
  * @param isAppleScript 是否以 AppleScript 运行，仅在 macOS 中生效，默认值 true
  */
 export async function execScript(script: string, isAppleScript: boolean = true) {
-  utools.hideMainWindow()
-  utools.outPlugin()
+  preExecScript()
 
   if (utools.isWindows()) return execPowerShell(script)
   if (isAppleScript && utools.isMacOS()) return execAppleScript(script)
