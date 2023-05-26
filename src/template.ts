@@ -76,14 +76,14 @@ export function searchList(list: Array<ListItem>, searchWord: string, render: Li
  * 不可变列表模板，列表项是固定的
  */
 export function immutableListTemplate(exports: TemplateExports, template: ImmutableListTemplate) {
-  const { list, placeholder, search } = template
+  const { list, placeholder } = template
   exports[template.code] = <ListTemplateExport>{
     mode: 'list',
     args: {
       enter: (action, render) => render(list),
       search: (action, searchWord, render) => {
-        if (search) {
-          search(action, searchWord, render)
+        if (template.search) {
+          template.search(action, searchWord, render)
         } else {
           searchList(list, searchWord, render)
         }
@@ -109,25 +109,25 @@ export interface MutableListTemplate extends ListTemplate {
  * 可变列表模板，列表项是动态的
  */
 export function mutableListTemplate(exports: TemplateExports, template: MutableListTemplate) {
-  const { placeholder, enter, search, select } = template
+  const { placeholder } = template
   exports[template.code] = <ListTemplateExport>{
     mode: 'list',
     args: {
       enter: (action, render) => {
-        enter(action, (list) => {
+        template.enter(action, (list) => {
           template.$list = list
           render(list)
         })
       },
       search: (action, searchWord, render) => {
-        if (search) {
-          search(action, searchWord, render)
+        if (template.search) {
+          template.search(action, searchWord, render)
         } else {
           if (!template.$list) return
           searchList(template.$list, searchWord, render)
         }
       },
-      select: (action, item) => select(action, item),
+      select: (action, item) => template.select(action, item),
       placeholder
     }
   }

@@ -1,4 +1,4 @@
-import { exec, ExecOptions, spawn, SpawnOptionsWithoutStdio } from 'child_process'
+import { exec, ExecOptions, spawn, SpawnOptionsWithoutStdio } from 'node:child_process'
 
 export interface CommandReturn {
   stdout: string
