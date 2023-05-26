@@ -1,7 +1,7 @@
 import { exec, ExecOptions, spawn, SpawnOptionsWithoutStdio } from 'child_process'
 
 export interface CommandReturn {
-  stdout: string,
+  stdout: string
   kill: () => boolean
 }
 
@@ -46,21 +46,22 @@ export async function execAppleScript(script: string, raw?: boolean) {
   return await execCommand(`osascript -e "${raw ? script : escapeQuoteMark(script)}"`)
 }
 
-export function preExecScript() {
+export function hideAndOutPlugin() {
   utools.hideMainWindow()
   utools.outPlugin()
 }
 
 /**
- * 运行脚本，Windows 上为 PowerShell、macOS 上为 AppleScript，Linux 上为 Shell
+ * 运行脚本，Windows 上为 PowerShell、macOS 上为 AppleScript，Linux 上为 Shell。在执行脚本之前会执行 `hideAndOutPlugin()`
  *
  * @param script 脚本
- * @param isAppleScript 是否以 AppleScript 运行，仅在 macOS 中生效，默认值 true
+ * @param defaultShell 是否使用各系统默认 Shell 执行，默认为 `false`
  */
-export async function execScript(script: string, isAppleScript: boolean = true) {
-  preExecScript()
+export async function execScript(script: string, defaultShell: boolean = false) {
+  hideAndOutPlugin()
 
+  if (defaultShell) return execCommand(script)
   if (utools.isWindows()) return execPowerShell(script)
-  if (isAppleScript && utools.isMacOS()) return execAppleScript(script)
+  if (utools.isMacOS()) return execAppleScript(script)
   return execCommand(script)
 }

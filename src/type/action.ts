@@ -1,4 +1,12 @@
+export interface Action<T extends Payload = Payload> {
+  code: string
+  type: ActionType
+  payload: T
+}
+
 export type ActionType = 'text' | 'img' | 'regex' | 'over' | 'files' | 'window'
+
+export type Payload = string | FilesPayload | WindowPayload
 
 export type FilesPayload = Array<{
   isFile: boolean
@@ -18,12 +26,4 @@ export interface WindowPayload {
   appPath: string
   pid: number
   app: string
-}
-
-export type Payload = string | FilesPayload | WindowPayload
-
-export interface Action {
-  code: string
-  type: ActionType
-  payload: Payload
 }

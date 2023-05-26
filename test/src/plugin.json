@@ -1,0 +1,32 @@
+{
+  "pluginName": "Test",
+  "author": "Trent0",
+  "homepage": "https://github.com/trentlee0",
+  "description": "Test",
+  "version": "1.0.0",
+  "logo": "logo.png",
+  "preload": "preload.js",
+  "features": [
+    {
+      "code": "code1",
+      "explain": "code1",
+      "cmds": [
+        "Test Code1"
+      ]
+    },
+    {
+      "code": "code2",
+      "explain": "code2",
+      "cmds": [
+        "Test Code2"
+      ]
+    },
+    {
+      "code": "code-list",
+      "explain": "code-list",
+      "cmds": [
+        "Test Code List"
+      ]
+    }
+  ]
+}

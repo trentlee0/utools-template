@@ -1,6 +1,6 @@
 {
   "name": "utools-utils",
-  "description": "A common utils for uTools",
+  "description": "The common utils for uTools",
   "version": "1.0.5",
   "author": "Trent0",
   "scripts": {
@@ -14,13 +14,26 @@
     "./common": "./dist/common.js",
     "./command": "./dist/command.js",
     "./storage": "./dist/storage.js",
-    "./template": "./dist/templat.js"
+    "./template": "./dist/template.js",
+    "./type": "./dist/type/index.js"
   },
+  "types": "./dist",
   "typesVersions": {
     "*": {
-      "*": [
-        "*",
-        "dist/*"
+      "common": [
+        "dist/common.d.ts"
+      ],
+      "command": [
+        "dist/command.d.ts"
+      ],
+      "storage": [
+        "dist/storage.d.ts"
+      ],
+      "template": [
+        "dist/template.d.ts"
+      ],
+      "type": [
+        "dist/type/index.d.ts"
       ]
     }
   },

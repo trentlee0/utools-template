@@ -1,15 +1,11 @@
-interface Action {
-  code: string
-  type: string
-  payload: any
-}
+import {
+  Action,
+  ListRenderFunction,
+  ListTemplateExport,
+  NoneTemplateExport,
+  TemplateExports
+} from './type'
 
-interface NoneInnerOption {
-  mode: 'none'
-  args: {
-    enter: (action: Action) => void
-  }
-}
 
 interface ListItem {
   title: string
@@ -19,43 +15,24 @@ interface ListItem {
   [prop: string]: any
 }
 
-type ListRenderFn = (list: Array<ListItem>) => void
-
-interface ListInnerOption {
-  mode: 'list'
-  args: {
-    enter: (action: Action, render: ListRenderFn) => void
-    search: (action: Action, searchWord: string, render: ListRenderFn) => void
-    select: (action: Action, item: ListItem, render: ListRenderFn) => void
-    placeholder?: string
-  }
-}
-
-interface TemplatesHolder {
-  [code: string]: NoneInnerOption | ListInnerOption
-}
-
-interface Feature {
+interface Template {
   code: string
-  icon?: string
-  explain?: string
-  cmds: Array<string>
-}
-
-interface Template extends Feature {
 }
 
 // ===================== NoneTemplate =====================
 
 export interface NoneTemplate extends Template {
-  handler: () => void
+  handler: (action: Action) => void
 }
 
-export function noneTemplate(holder: TemplatesHolder, template: NoneTemplate) {
-  holder[template.code] = <NoneInnerOption>{
+/**
+ * 无 UI 模板
+ */
+export function noneTemplate(exports: TemplateExports, template: NoneTemplate) {
+  exports[template.code] = <NoneTemplateExport>{
     mode: 'none',
     args: {
-      enter: () => template.handler()
+      enter: (action) => template.handler(action)
     }
   }
 }
@@ -63,103 +40,101 @@ export function noneTemplate(holder: TemplatesHolder, template: NoneTemplate) {
 // ===================== ListTemplate =====================
 
 interface ListTemplate extends Template {
-  $state?: Array<ListItem>
-  descSearchable?: boolean
+  /**
+   * 搜索框占位文本
+   */
   placeholder?: string
+
+  /**
+   * 搜索列表
+   */
+  search?(action: Action, searchWord: string, render: ListRenderFunction): void
 }
 
 export interface ImmutableListItem extends ListItem {
-  handler: () => void
+  handler: (action: Action) => void
 }
 
 export interface ImmutableListTemplate extends ListTemplate {
   list: Array<ImmutableListItem>
 }
 
-function searchList(list: Array<ListItem>, searchWord: string, descSearchable?: boolean) {
+/**
+ * 根据关键字 `searchWord` 搜索字段 `title` 和 `description`，默认忽略大小写
+ */
+export function searchList(list: Array<ListItem>, searchWord: string, render: ListRenderFunction) {
   searchWord = searchWord.toLowerCase()
-  return list.filter(({ title, description }) =>
-    title.toLowerCase().includes(searchWord) ||
-    (descSearchable && description?.toLowerCase().includes(searchWord))
+  render(
+    list.filter(({ title, description }) => {
+      return title.toLowerCase().includes(searchWord)
+        || description?.toLowerCase().includes(searchWord)
+    })
   )
 }
 
-export function featureToListItem(feature: Feature): ListItem {
-  return {
-    title: feature.cmds[0],
-    description: feature.explain,
-    icon: feature.icon
-  }
-}
-
-export function noneToImmutableListItem(none: NoneTemplate): ImmutableListItem {
-  return {
-    ...featureToListItem(none),
-    handler: none.handler
-  }
-}
-
-export function immutableListTemplate(holder: TemplatesHolder, template: ImmutableListTemplate) {
-  const { list, descSearchable, placeholder } = template
-  template.$state = list
-
-  holder[template.code] = <ListInnerOption>{
+/**
+ * 不可变列表模板，列表项是固定的
+ */
+export function immutableListTemplate(exports: TemplateExports, template: ImmutableListTemplate) {
+  const { list, placeholder, search } = template
+  exports[template.code] = <ListTemplateExport>{
     mode: 'list',
     args: {
       enter: (action, render) => render(list),
       search: (action, searchWord, render) => {
-        render(searchList(list, searchWord, descSearchable))
+        if (search) {
+          search(action, searchWord, render)
+        } else {
+          searchList(list, searchWord, render)
+        }
       },
-      select: (action, item) => (item as ImmutableListItem).handler(),
+      select: (action, item: ImmutableListItem) => item.handler(action),
       placeholder
     }
   }
 }
 
-function bind<T extends Function>(fn: T, context?: object): T {
-  if (!context) return fn
-  // @ts-ignore
-  return (...args: any) => fn.apply(context, args)
-}
-
 export interface MutableListTemplate extends ListTemplate {
-  data?: () => { [prop: string]: any }
-  onlyEnterOnce?: boolean
-  onEnter: (render: ListRenderFn) => void
-  onSelect: (item: ListItem) => void
+  /**
+   * 动态获取的列表数据，用于默认搜索，在实现类中定义后可直接使用。可以忽略
+   */
+  $list?: Array<ListItem>
+
+  enter(action: Action, render: ListRenderFunction): void
+
+  select(action: Action, item: ListItem): void
 }
 
-export function mutableListTemplate(holder: TemplatesHolder, template: MutableListTemplate) {
-  const { descSearchable, onlyEnterOnce, placeholder } = template
-  const dataContext = template.data?.()
-  const onEnter = bind(template.onEnter, dataContext)
-  const onSelect = bind(template.onSelect, dataContext)
-
-  holder[template.code] = <ListInnerOption>{
+/**
+ * 可变列表模板，列表项是动态的
+ */
+export function mutableListTemplate(exports: TemplateExports, template: MutableListTemplate) {
+  const { placeholder, enter, search, select } = template
+  exports[template.code] = <ListTemplateExport>{
     mode: 'list',
     args: {
       enter: (action, render) => {
-        if (onlyEnterOnce && template.$state?.length) {
-          return render(template.$state)
-        }
-        onEnter((list) => {
-          template.$state = list
+        enter(action, (list) => {
+          template.$list = list
           render(list)
         })
       },
       search: (action, searchWord, render) => {
-        if (!template.$state?.length) return
-        render(searchList(template.$state, searchWord, descSearchable))
+        if (search) {
+          search(action, searchWord, render)
+        } else {
+          if (!template.$list) return
+          searchList(template.$list, searchWord, render)
+        }
       },
-      select: (action, item) => onSelect(item),
+      select: (action, item) => select(action, item),
       placeholder
     }
   }
 }
 
-
 class TemplateBuilder {
-  private readonly templates: TemplatesHolder = {}
+  private readonly templates: TemplateExports = {}
 
   none(...templates: Array<NoneTemplate>) {
     for (const template of templates) {
@@ -189,21 +164,4 @@ class TemplateBuilder {
 
 export function templateBuilder() {
   return new TemplateBuilder()
-}
-
-interface ExportedTemplates {
-  [exportedName: string]: Template | Array<Template>
-}
-
-export function generateFeatures(exportedTemplates: ExportedTemplates) {
-  const features: Feature[] = []
-  for (const prop in exportedTemplates) {
-    const template = exportedTemplates[prop]
-    if (Array.isArray(template)) {
-      features.push(...template)
-    } else {
-      features.push(template)
-    }
-  }
-  return features
 }

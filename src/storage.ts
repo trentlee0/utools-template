@@ -59,8 +59,7 @@ class UToolsLocalStorage extends AbstractStorage {
 class BrowserStorage extends AbstractStorage {
   get<T>(key: string): T | null {
     const value = localStorage.getItem(key)
-    if (value) return JSON.parse(value)
-    return null
+    return value !== null ? JSON.parse(value) : null
   }
 
   like<T>(prefix: string): T[] {
