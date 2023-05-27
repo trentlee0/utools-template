@@ -1,19 +1,53 @@
-export interface Action<T extends Payload = Payload> {
+export type Action = StringAction | ImageAction | FilesAction | WindowAction
+
+interface AbstractAction {
   code: string
-  type: ActionType
-  payload: T
 }
 
-export type ActionType = 'text' | 'img' | 'regex' | 'over' | 'files' | 'window'
+export interface StringAction extends AbstractAction {
+  type: 'text' | 'regex' | 'over'
 
-export type Payload = string | FilesPayload | WindowPayload
+  /**
+   * 主输入框文本
+   */
+  payload: string
+}
 
-export type FilesPayload = Array<{
+export interface ImageAction extends AbstractAction {
+  type: 'img'
+
+  /**
+   * Base64 编码的图片
+   */
+  payload: string
+}
+
+export interface FilesAction extends AbstractAction {
+  type: 'files'
+
+  /**
+   * 文件列表
+   */
+  payload: FilesPayload
+}
+
+export type FilesPayload = Array<FilePayload>
+
+export interface FilePayload {
   isFile: boolean
   isDirectory: boolean
   name: string
   path: string
-}>
+}
+
+export interface WindowAction extends AbstractAction {
+  type: 'window'
+
+  /**
+   * 窗口信息
+   */
+  payload: WindowPayload
+}
 
 export interface WindowPayload {
   id: number

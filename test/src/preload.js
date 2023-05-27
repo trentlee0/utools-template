@@ -3,14 +3,14 @@ const { templateBuilder, hideAndOutPlugin } = require('../../dist')
 const none = [
   {
     code: 'code1',
-    handler: () => {
+    enter: () => {
       hideAndOutPlugin()
       utools.shellOpenExternal('https://www.baidu.com/s?wd=code1')
     }
   },
   {
     code: 'code2',
-    handler: () => {
+    enter: () => {
       hideAndOutPlugin()
       utools.shellOpenExternal('https://www.baidu.com/s?wd=code2')
     }
@@ -27,7 +27,7 @@ const list = [
           description: item.code,
           icon: 'logo.png',
           handler: () => {
-            item.handler()
+            item.enter()
           }
         }
       })

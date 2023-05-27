@@ -35,7 +35,7 @@ class Test2 implements MutableListTemplate {
 class Test3 implements NoneTemplate {
   code = 'test3'
 
-  handler(action: Action): void {
+  enter(action: Action): void {
   }
 }
 
