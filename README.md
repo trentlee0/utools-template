@@ -1,8 +1,9 @@
 # utools-utils
 
-Common utils for uTools
+The common utils for uTools
 
 - common
-- template
 - storage
-- command
+- template
+- preload
+- type

@@ -11,7 +11,18 @@
       "code": "code1",
       "explain": "code1",
       "cmds": [
-        "Test Code1"
+        "Test Code1",
+        {
+          "type": "window",
+          "label": "hello",
+          "match": {
+            "app": [
+              "xxx.app",
+              "xxx.exe"
+            ],
+            "title": "/xxx/"
+          }
+        }
       ]
     },
     {

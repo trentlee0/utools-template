@@ -4,6 +4,7 @@ import {
   spawn,
   SpawnOptionsWithoutStdio
 } from 'node:child_process'
+import { hideAndOutPlugin } from './common'
 
 export interface CommandReturn {
   stdout: string
@@ -77,14 +78,6 @@ function escape(s: string) {
  */
 export async function execAppleScript(script: string, raw: boolean = false) {
   return await execCommand(`osascript -e "${raw ? script : escape(script)}"`)
-}
-
-/**
- * 隐藏并退出当前 uTools 插件
- */
-export function hideAndOutPlugin() {
-  utools.hideMainWindow()
-  utools.outPlugin()
 }
 
 /**

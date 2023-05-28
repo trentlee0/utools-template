@@ -5,3 +5,11 @@ export function isUTools() {
 export function isBrowser() {
   return !isUTools()
 }
+
+/**
+ * 隐藏并退出当前 uTools 插件
+ */
+export function hideAndOutPlugin() {
+  utools.hideMainWindow()
+  utools.outPlugin()
+}

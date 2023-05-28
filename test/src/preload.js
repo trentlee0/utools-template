@@ -21,7 +21,7 @@ const list = [
   {
     code: 'code-list',
     list: [
-      ...none.map(item => {
+      ...none.map((item) => {
         return {
           title: item.code,
           description: item.code,
@@ -39,4 +39,3 @@ window.exports = templateBuilder()
   .none(...none)
   .immutableList(...list)
   .build()
-

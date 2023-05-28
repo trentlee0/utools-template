@@ -1,7 +1,7 @@
 {
   "name": "utools-utils",
   "description": "The common utils for uTools",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "author": "Trent0",
   "scripts": {
     "build": "del-cli dist && tsc",
@@ -12,9 +12,9 @@
   "exports": {
     ".": "./dist/index.js",
     "./common": "./dist/common.js",
-    "./command": "./dist/command.js",
     "./storage": "./dist/storage.js",
     "./template": "./dist/template.js",
+    "./preload": "./dist/preload.js",
     "./type": "./dist/type/index.js"
   },
   "types": "./dist",
@@ -23,14 +23,14 @@
       "common": [
         "dist/common.d.ts"
       ],
-      "command": [
-        "dist/command.d.ts"
-      ],
       "storage": [
         "dist/storage.d.ts"
       ],
       "template": [
         "dist/template.d.ts"
+      ],
+      "preload": [
+        "dist/preload.d.ts"
       ],
       "type": [
         "dist/type/index.d.ts"
