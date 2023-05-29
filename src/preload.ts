@@ -50,12 +50,19 @@ export function spawnCommand(
       child.stdin.end()
     }
 
+    let stderr = Buffer.from('')
+    child.stderr.on('data', (chunk) => (stderr += chunk))
+
     let stdout = Buffer.from('')
-    child.stdout.on('data', (out) => (stdout += out))
-    child.on('close', () =>
-      resolve({ stdout: stdout.toString(), kill: () => child.kill() })
-    )
-    child.on('error', reject)
+    child.stdout.on('data', (chunk) => (stdout += chunk))
+
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve({ stdout: stdout.toString(), kill: () => child.kill() })
+      } else {
+        reject(new Error(stderr.toString()))
+      }
+    })
   })
 }
 
