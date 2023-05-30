@@ -63,6 +63,8 @@ export function spawnCommand(
         reject(new Error(stderr.toString()))
       }
     })
+
+    child.on('error', reject)
   })
 }
 
