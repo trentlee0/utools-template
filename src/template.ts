@@ -58,20 +58,34 @@ export interface MutableListTemplate extends ListTemplate {
   select(action: Action, item: ListItem): void
 }
 
-function searchList(
-  list: Array<ListItem>,
-  word: string,
-  render: ListRenderFunction
-) {
+/**
+ * 关键词搜索，忽略大小写搜索 `title` 和 `description`
+ */
+
+export function searchList(list: Array<ListItem>, word: string): ListItem[]
+/**
+ * 多关键词搜索，忽略大小写搜索 `title` 和 `description`
+ */
+export function searchList(list: Array<ListItem>, words: string[]): ListItem[]
+
+export function searchList(list: Array<ListItem>, words: string | string[]) {
+  if (!Array.isArray(words)) return search(list, words)
+
+  let filteredList: Array<ListItem> = list
+  for (const word of words) {
+    filteredList = search(list, word)
+  }
+  return filteredList
+}
+
+function search(list: Array<ListItem>, word: string) {
   word = word.toLowerCase()
-  render(
-    list.filter(({ title, description }) => {
-      return (
-        title.toLowerCase().includes(word) ||
-        description?.toLowerCase().includes(word)
-      )
-    })
-  )
+  return list.filter(({ title, description }) => {
+    return (
+      title.toLowerCase().includes(word) ||
+      description?.toLowerCase().includes(word)
+    )
+  })
 }
 
 class TemplateBuilder {
@@ -106,7 +120,7 @@ class TemplateBuilder {
             if (template.search) {
               template.search(action, searchWord, render)
             } else {
-              searchList(list, searchWord, render)
+              render(search(list, searchWord))
             }
           },
           select: (action, item: ImmutableListItem) => item.handler(action),
@@ -137,7 +151,7 @@ class TemplateBuilder {
               template.search(action, searchWord, render)
             } else {
               if (!template.$list) return
-              searchList(template.$list, searchWord, render)
+              render(search(template.$list, searchWord))
             }
           },
           select: (action, item) => template.select(action, item),
