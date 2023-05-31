@@ -73,7 +73,7 @@ export function searchList(list: Array<ListItem>, words: string | string[]) {
 
   let filteredList: Array<ListItem> = list
   for (const word of words) {
-    filteredList = search(list, word)
+    filteredList = search(filteredList, word)
   }
   return filteredList
 }
