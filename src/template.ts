@@ -43,7 +43,7 @@ export interface ImmutableListTemplate extends ListTemplate {
  */
 export interface MutableListTemplate extends ListTemplate {
   /**
-   * 动态获取的列表数据，用于默认搜索，在实现类中定义后可直接使用。可以忽略
+   * 用于获取动态列表数据，默认搜索中使用到，在 `enter` 中调用 `render` 函数会刷新。在实现类中定义后可直接使用，也可以忽略
    */
   $list?: Array<ListItem>
 
@@ -79,6 +79,7 @@ export function searchList(list: Array<ListItem>, words: string | string[]) {
 }
 
 function search(list: Array<ListItem>, word: string) {
+  if (!word) return list
   word = word.toLowerCase()
   return list.filter(({ title, description }) => {
     return (
@@ -150,8 +151,7 @@ class TemplateBuilder {
             if (template.search) {
               template.search(action, searchWord, render)
             } else {
-              if (!template.$list) return
-              render(search(template.$list, searchWord))
+              render(search(template.$list ?? [], searchWord))
             }
           },
           select: (action, item) => template.select(action, item),
