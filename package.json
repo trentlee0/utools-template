@@ -1,7 +1,7 @@
 {
   "name": "utools-utils",
   "description": "The common utils for uTools",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "author": "Trent Lee",
   "scripts": {
     "build": "del-cli dist && tsc",

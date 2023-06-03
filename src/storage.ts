@@ -1,5 +1,5 @@
 export abstract class AbstractStorage {
-  abstract get<T>(key: string): T | null
+  protected abstract getItem<T>(key: string): T | null
 
   abstract like<T>(prefix: string): T[]
 
@@ -7,13 +7,20 @@ export abstract class AbstractStorage {
 
   abstract remove(key: string): void
 
-  getOrDefault<T>(key: string, defaultVal: T): T {
-    return this.get<T>(key) ?? defaultVal
+  get<T>(key: string): T | null
+
+  get<T>(key: string, defaultVal: T): T
+
+  get<T>(key: string, defaultVal?: T): T | null {
+    if (defaultVal !== undefined) {
+      return this.getItem(key) ?? defaultVal
+    }
+    return this.getItem(key)
   }
 }
 
 class UToolsSyncStorage extends AbstractStorage {
-  get<T>(key: string): T | null {
+  protected getItem<T>(key: string): T | null {
     return utools.dbStorage.getItem(key)
   }
 
@@ -39,7 +46,7 @@ class UToolsLocalStorage extends AbstractStorage {
     return `${utools.getNativeId()}/${key}`
   }
 
-  get<T>(key: string): T | null {
+  protected getItem<T>(key: string): T | null {
     return this.storage.get<T>(this.localKey(key))
   }
 
@@ -57,7 +64,7 @@ class UToolsLocalStorage extends AbstractStorage {
 }
 
 class BrowserStorage extends AbstractStorage {
-  get<T>(key: string): T | null {
+  protected getItem<T>(key: string): T | null {
     const value = localStorage.getItem(key)
     return value !== null ? JSON.parse(value) : null
   }

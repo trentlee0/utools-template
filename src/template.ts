@@ -17,17 +17,23 @@ export interface NoneTemplate extends Template {
 interface ListTemplate extends Template {
   /**
    * 输入框占位符
-   * @default "搜索"
+   *
+   * 默认值为 `"搜索"`
    */
   placeholder?: string
 
   /**
-   * 输入框改变时调用。默认使用 `searchWord`，忽略大小写搜索字段 `title` 和 `description`。
+   * 输入框改变时调用。
+   *
+   * 默认值为使用 `searchWord`，忽略大小写搜索字段 `title` 和 `description`。参见 {@link search} 方法
    */
   search?(action: Action, searchWord: string, render: ListRenderFunction): void
 }
 
 export interface ImmutableListItem extends ListItem {
+  /**
+   * 选中当前项的处理函数
+   */
   handler: (action: Action) => void
 }
 
@@ -93,6 +99,7 @@ class TemplateBuilder {
   private readonly exports: TemplateExports = {}
 
   /**
+   * 根据无 UI 模板构建
    * @param templates 无 UI 模板
    */
   none(...templates: Array<NoneTemplate>) {
@@ -108,6 +115,7 @@ class TemplateBuilder {
   }
 
   /**
+   * 根据不可变列表模板构建
    * @param templates 不可变列表模板，列表项是固定的
    */
   immutableList(...templates: Array<ImmutableListTemplate>) {
@@ -133,6 +141,7 @@ class TemplateBuilder {
   }
 
   /**
+   * 根据可变列表模板构建
    * @param templates 可变列表模板，列表项是动态的
    */
   mutableList(...templates: Array<MutableListTemplate>) {
@@ -162,6 +171,9 @@ class TemplateBuilder {
     return this
   }
 
+  /**
+   * 获取构建结果
+   */
   build() {
     return this.exports
   }
