@@ -1,42 +1,41 @@
 {
   "name": "utools-utils",
   "description": "The common utils for uTools",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "author": "Trent Lee",
   "scripts": {
-    "build": "del-cli dist && tsc",
+    "build": "tsup src/index.ts src/preload.ts --dts --format cjs,esm --clean",
     "release": "npm run build && npm publish"
   },
-  "main": "dist/index.js",
   "type": "commonjs",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "typings": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./common": "./dist/common.js",
-    "./storage": "./dist/storage.js",
-    "./template": "./dist/template.js",
-    "./preload": "./dist/preload.js",
-    "./type": "./dist/type/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    },
+    "./preload": {
+      "types": "./dist/preload.d.ts",
+      "require": "./dist/preload.js",
+      "import": "./dist/preload.mjs"
+    }
   },
-  "types": "./dist",
   "typesVersions": {
     "*": {
-      "common": [
-        "dist/common.d.ts"
-      ],
-      "storage": [
-        "dist/storage.d.ts"
-      ],
-      "template": [
-        "dist/template.d.ts"
+      "*": [
+        "dist/index.d.ts"
       ],
       "preload": [
         "dist/preload.d.ts"
-      ],
-      "type": [
-        "dist/type/index.d.ts"
       ]
     }
   },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/trentlee0/utools-utils.git"
@@ -54,6 +53,7 @@
   "devDependencies": {
     "@types/node": "^16.11.7",
     "prettier": "^2.8.8",
+    "tsup": "^6.7.0",
     "typescript": "^5.0.4",
     "utools-api-types": "^3.0.0"
   }
