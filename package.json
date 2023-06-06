@@ -1,7 +1,7 @@
 {
   "name": "utools-utils",
   "description": "The common utils for uTools",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "author": "Trent Lee",
   "scripts": {
     "build": "tsup src/index.ts src/preload.ts --dts --format cjs,esm --clean",
