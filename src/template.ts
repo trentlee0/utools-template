@@ -65,34 +65,54 @@ export interface MutableListTemplate extends ListTemplate {
 }
 
 /**
- * 关键词搜索，忽略大小写搜索 `title` 和 `description`
+ * 关键词搜索，忽略大小写搜索指定对象属性的值
  */
-
-export function searchList(list: Array<ListItem>, word: string): ListItem[]
+export function searchList<T>(
+  list: Array<T>,
+  word: string,
+  searchKeys: Array<keyof T>
+): T[]
 /**
- * 多关键词搜索，忽略大小写搜索 `title` 和 `description`
+ * 多关键词搜索，忽略大小写搜索指定对象属性的值
  */
-export function searchList(list: Array<ListItem>, words: string[]): ListItem[]
+export function searchList<T>(
+  list: Array<T>,
+  words: string[],
+  searchKeys: Array<keyof T>
+): T[]
 
-export function searchList(list: Array<ListItem>, words: string | string[]) {
-  if (!Array.isArray(words)) return search(list, words)
+export function searchList<T>(
+  list: Array<T>,
+  words: string | string[],
+  searchKeys: Array<keyof T>
+) {
+  if (!Array.isArray(words)) return search(list, words, searchKeys)
 
-  let filteredList: Array<ListItem> = list
+  let filteredList: Array<T> = list
   for (const word of words) {
-    filteredList = search(filteredList, word)
+    filteredList = search(filteredList, word, searchKeys)
   }
   return filteredList
 }
 
-function search(list: Array<ListItem>, word: string) {
+function search<T>(list: Array<T>, word: string, searchKeys: Array<keyof T>) {
   if (!word) return list
   word = word.toLowerCase()
-  return list.filter(({ title, description }) => {
-    return (
-      title.toLowerCase().includes(word) ||
-      description?.toLowerCase().includes(word)
-    )
+  return list.filter((item) => {
+    for (const key of searchKeys) {
+      const value = item[key]
+      if (typeof value === 'string' && value.toLowerCase().includes(word)) {
+        return true
+      }
+    }
   })
+}
+
+/**
+ * 关键词搜索，忽略大小写搜索 `title` 和 `description`
+ */
+export function searchListItems(listItems: Array<ListItem>, word: string) {
+  return search(listItems, word, ['title', 'description'])
 }
 
 class TemplateBuilder {
@@ -129,7 +149,7 @@ class TemplateBuilder {
             if (template.search) {
               template.search(action, searchWord, render)
             } else {
-              render(search(list, searchWord))
+              render(searchListItems(list, searchWord))
             }
           },
           select: (action, item: ImmutableListItem) => item.handler(action),
@@ -160,7 +180,7 @@ class TemplateBuilder {
             if (template.search) {
               template.search(action, searchWord, render)
             } else {
-              render(search(template.$list ?? [], searchWord))
+              render(searchListItems(template.$list ?? [], searchWord))
             }
           },
           select: (action, item) => template.select(action, item),
