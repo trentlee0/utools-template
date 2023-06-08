@@ -83,11 +83,11 @@ function escape(s: string) {
 /**
  * 执行 AppleScript 脚本
  * @param script  脚本
- * @param requiredEscape 是否需要转义字符 `"`，默认为 `false`
+ * @param requiredEscape 是否需要转义字符 `"`，默认为 `true`
  */
 export async function execAppleScript(
   script: string,
-  requiredEscape: boolean = false
+  requiredEscape: boolean = true
 ) {
   return await execCommand(
     `osascript -e "${requiredEscape ? escape(script) : script}"`

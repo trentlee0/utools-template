@@ -1,6 +1,6 @@
 {
   "name": "utools-utils",
-  "description": "The common utils for uTools",
+  "description": "Common utilities for uTools",
   "version": "1.1.8",
   "author": "Trent Lee",
   "scripts": {
@@ -28,14 +28,14 @@
   },
   "typesVersions": {
     "*": {
-      ".": [
-        "dist/index.d.ts"
-      ],
       "type": [
         "dist/type/index.d.ts"
       ],
       "preload": [
         "dist/preload.d.ts"
+      ],
+      "*": [
+        "dist/index.d.ts"
       ]
     }
   },

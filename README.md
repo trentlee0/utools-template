@@ -1,7 +1,8 @@
 # utools-utils
 
-The common utils for uTools
+Common utilities for uTools
 
+The package includes:
 - common
 - storage
 - template

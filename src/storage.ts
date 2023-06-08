@@ -63,28 +63,32 @@ class UToolsLocalStorage extends AbstractStorage {
   }
 }
 
-class BrowserStorage extends AbstractStorage {
+class BrowserStorageAdapter extends AbstractStorage {
+  constructor(private storage: Storage) {
+    super()
+  }
+
   protected getItem<T>(key: string): T | null {
-    const value = localStorage.getItem(key)
+    const value = this.storage.getItem(key)
     return value !== null ? JSON.parse(value) : null
   }
 
   like<T>(prefix: string): T[] {
     const list: T[] = []
-    for (const key in localStorage) {
+    for (const key in this.storage) {
       if (key.startsWith(prefix)) {
-        list.push(JSON.parse(localStorage[key]))
+        list.push(JSON.parse(this.storage[key]))
       }
     }
     return list
   }
 
   set(key: string, value: any): void {
-    localStorage.setItem(key, JSON.stringify(value))
+    this.storage.setItem(key, JSON.stringify(value))
   }
 
   remove(key: string): void {
-    localStorage.removeItem(key)
+    this.storage.removeItem(key)
   }
 }
 
@@ -92,4 +96,6 @@ export const sync = new UToolsSyncStorage()
 
 export const local = new UToolsLocalStorage()
 
-export const browser = new BrowserStorage()
+export const browser = new BrowserStorageAdapter(window.localStorage)
+
+export const session = new BrowserStorageAdapter(window.sessionStorage)

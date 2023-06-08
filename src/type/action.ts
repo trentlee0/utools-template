@@ -51,7 +51,7 @@ export interface WindowAction extends AbstractAction {
 
 export interface WindowPayload {
   id: number
-  class: string
+  class?: string
   title: string
   x: number
   y: number

@@ -11,7 +11,7 @@ export interface NoneTemplate extends Template {
   /**
    * 进入插件时调用
    */
-  enter: (action: Action) => void
+  enter(action: Action): void
 }
 
 interface ListTemplate extends Template {
