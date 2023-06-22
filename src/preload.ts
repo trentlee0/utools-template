@@ -32,18 +32,18 @@ export async function execCommand(command: string, options?: ExecOptions) {
  * 运行命令
  * @param command 命令名
  * @param args 命令参数
- * @param options 选项
  * @param inputs 标准输入
+ * @param options 选项
  */
 export function spawnCommand(
   command: string,
   args: string[],
-  options?: SpawnOptionsWithoutStdio,
-  inputs?: string[]
+  inputs?: string[],
+  options?: SpawnOptionsWithoutStdio
 ) {
   return new Promise<CommandReturn>((resolve, reject) => {
     const child = spawn(command, args, options)
-    if (inputs !== undefined) {
+    if (inputs !== undefined && inputs.length > 0) {
       for (const input of inputs) {
         child.stdin.write(input)
       }

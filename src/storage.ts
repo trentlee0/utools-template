@@ -1,4 +1,23 @@
-export abstract class AbstractStorage {
+export interface Storable {
+  get<T>(key: string): T | null
+
+  get<T>(key: string, defaultVal: T): T
+
+  like<T>(prefix: string): T[]
+
+  set(key: string, value: any): void
+
+  remove(key: string): void
+}
+
+export abstract class AbstractStorage implements Storable {
+  get<T>(key: string, defaultVal?: T): T | null {
+    if (defaultVal !== undefined) {
+      return this.getItem(key) ?? defaultVal
+    }
+    return this.getItem(key)
+  }
+
   protected abstract getItem<T>(key: string): T | null
 
   abstract like<T>(prefix: string): T[]
@@ -6,17 +25,6 @@ export abstract class AbstractStorage {
   abstract set(key: string, value: any): void
 
   abstract remove(key: string): void
-
-  get<T>(key: string): T | null
-
-  get<T>(key: string, defaultVal: T): T
-
-  get<T>(key: string, defaultVal?: T): T | null {
-    if (defaultVal !== undefined) {
-      return this.getItem(key) ?? defaultVal
-    }
-    return this.getItem(key)
-  }
 }
 
 class UToolsSyncStorage extends AbstractStorage {
@@ -40,30 +48,30 @@ class UToolsSyncStorage extends AbstractStorage {
 }
 
 class UToolsLocalStorage extends AbstractStorage {
-  private readonly storage: AbstractStorage = new UToolsSyncStorage()
+  private readonly storage: Storable = new UToolsSyncStorage()
 
   private localKey(key: string) {
     return `${utools.getNativeId()}/${key}`
   }
 
-  protected getItem<T>(key: string): T | null {
+  protected getItem<T>(key: string) {
     return this.storage.get<T>(this.localKey(key))
   }
 
-  like<T>(prefix: string): T[] {
+  like<T>(prefix: string) {
     return this.storage.like<T>(this.localKey(prefix))
   }
 
-  set(key: string, value: any): void {
+  set(key: string, value: any) {
     this.storage.set(this.localKey(key), value)
   }
 
-  remove(key: string): void {
+  remove(key: string) {
     this.storage.remove(this.localKey(key))
   }
 }
 
-class BrowserStorageAdapter extends AbstractStorage {
+export class BrowserStorageAdapter extends AbstractStorage {
   constructor(private storage: Storage) {
     super()
   }
@@ -73,7 +81,7 @@ class BrowserStorageAdapter extends AbstractStorage {
     return value !== null ? JSON.parse(value) : null
   }
 
-  like<T>(prefix: string): T[] {
+  like<T>(prefix: string) {
     const list: T[] = []
     for (const key in this.storage) {
       if (key.startsWith(prefix)) {
@@ -83,19 +91,21 @@ class BrowserStorageAdapter extends AbstractStorage {
     return list
   }
 
-  set(key: string, value: any): void {
+  set(key: string, value: any) {
     this.storage.setItem(key, JSON.stringify(value))
   }
 
-  remove(key: string): void {
+  remove(key: string) {
     this.storage.removeItem(key)
   }
 }
 
-export const sync = new UToolsSyncStorage()
+/**
+ * 同步存储，在所有设备上同步
+ */
+export const sync: Storable = new UToolsSyncStorage()
 
-export const local = new UToolsLocalStorage()
-
-export const browser = new BrowserStorageAdapter(window.localStorage)
-
-export const session = new BrowserStorageAdapter(window.sessionStorage)
+/**
+ * 本地存储，只在本机同步
+ */
+export const local: Storable = new UToolsLocalStorage()
