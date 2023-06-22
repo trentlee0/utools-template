@@ -35,6 +35,9 @@ export interface ListTemplateExport {
 export interface ListItem {
   title: string
   description?: string
+  /**
+   * 图标路径，默认为相对路径。如果为绝对路径，需要添加前缀 `file://`。除此之外，还可以填入 Base64 图片。
+   */
   icon?: string
 
   [prop: string]: any

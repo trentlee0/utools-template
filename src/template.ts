@@ -17,15 +17,14 @@ export interface NoneTemplate extends Template {
 interface ListTemplate extends Template {
   /**
    * 输入框占位符
-   *
-   * 默认值为 `"搜索"`
+   * @default "搜索"
    */
   placeholder?: string
 
   /**
    * 输入框改变时调用。
    *
-   * 默认值为使用 `searchWord`，忽略大小写搜索字段 `title` 和 `description`。参见 {@link search} 方法
+   * 如果不实现该方法，则会使用 `searchWord`，忽略大小写搜索字段 `title` 和 `description`。参见 {@link search} 方法
    */
   search?(action: Action, searchWord: string, render: ListRenderFunction): void
 }
@@ -49,14 +48,14 @@ export interface ImmutableListTemplate extends ListTemplate {
  */
 export interface MutableListTemplate extends ListTemplate {
   /**
-   * 用于获取动态列表数据，默认搜索中使用到，在 `enter` 中调用 `render` 函数会刷新。在实现类中定义后可直接使用，也可以忽略
+   * 存放初始动态列表数据，默认搜索使用到，在 `enter` 中调用 `render` 函数时会刷新。在实现类中定义后可直接使用，也可以忽略
    */
   $list?: Array<ListItem>
 
   /**
    * 进入插件时调用
    */
-  enter(action: Action, render: ListRenderFunction): void
+  enter?(action: Action, render: ListRenderFunction): void
 
   /**
    * 使用回车键选择某项时调用
@@ -171,7 +170,7 @@ class TemplateBuilder {
         mode: 'list',
         args: {
           enter: (action, render) => {
-            template.enter(action, (list) => {
+            template.enter?.(action, (list) => {
               template.$list = list
               render(list)
             })
