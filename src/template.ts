@@ -69,7 +69,8 @@ export interface MutableListTemplate extends ListTemplate {
 export function searchList<T>(
   list: Array<T>,
   word: string,
-  searchKeys: Array<keyof T>
+  searchKeys: Array<keyof T>,
+  searcher?: Searcher<T>
 ): T[]
 /**
  * 多关键词搜索，忽略大小写搜索指定对象属性的值
@@ -77,34 +78,51 @@ export function searchList<T>(
 export function searchList<T>(
   list: Array<T>,
   words: string[],
-  searchKeys: Array<keyof T>
+  searchKeys: Array<keyof T>,
+  searcher?: Searcher<T>
 ): T[]
 
 export function searchList<T>(
   list: Array<T>,
   words: string | string[],
-  searchKeys: Array<keyof T>
+  searchKeys: Array<keyof T>,
+  searcher?: Searcher<T>
 ) {
-  if (!Array.isArray(words)) return search(list, words, searchKeys)
+  if (!Array.isArray(words)) return search(list, words, searchKeys, searcher)
 
   let filteredList: Array<T> = list
   for (const word of words) {
-    filteredList = search(filteredList, word, searchKeys)
+    filteredList = search(filteredList, word, searchKeys, searcher)
   }
   return filteredList
 }
 
-function search<T>(list: Array<T>, word: string, searchKeys: Array<keyof T>) {
+export type Searcher<T> = (
+  item: T,
+  word: string,
+  searchKeys: Array<keyof T>
+) => boolean
+
+function search<T>(
+  list: Array<T>,
+  word: string,
+  searchKeys: Array<keyof T>,
+  searcher?: Searcher<T>
+) {
   if (!word) return list
-  word = word.toLowerCase()
-  return list.filter((item) => {
-    for (const key of searchKeys) {
-      const value = item[key]
-      if (typeof value === 'string' && value.toLowerCase().includes(word)) {
-        return true
+  if (!searcher) {
+    word = word.toLowerCase()
+    searcher = (item, word, searchKeys) => {
+      for (const key of searchKeys) {
+        const value = item[key]
+        if (typeof value === 'string' && value.toLowerCase().includes(word)) {
+          return true
+        }
       }
+      return false
     }
-  })
+  }
+  return list.filter((item) => searcher?.(item, word, searchKeys))
 }
 
 /**
