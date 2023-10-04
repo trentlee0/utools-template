@@ -107,12 +107,9 @@ export function searchList<T>(
 /**
  * 实体搜索器
  */
-export function entitySearcher<T>(
-  word: string,
-  keys: Array<keyof T>
-): Searcher<T> {
-  word = word.toLowerCase()
+export function entitySearcher<T>(keys: Array<keyof T>): Searcher<T> {
   return (item, word) => {
+    word = word.toLowerCase()
     for (const key of keys) {
       const value = item[key]
       if (typeof value === 'string' && value.toLowerCase().includes(word)) {
@@ -127,7 +124,7 @@ export function entitySearcher<T>(
  * 关键词搜索，忽略大小写搜索 `title` 和 `description`
  */
 export function searchListItems(listItems: Array<ListItem>, word: string) {
-  return search(listItems, word, entitySearcher(word, ['title', 'description']))
+  return search(listItems, word, entitySearcher(['title', 'description']))
 }
 
 class TemplateBuilder {
