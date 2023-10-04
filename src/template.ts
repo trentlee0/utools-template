@@ -63,14 +63,23 @@ export interface MutableListTemplate extends ListTemplate {
   select(action: Action, item: ListItem): void
 }
 
+function search<T>(list: Array<T>, word: string, searcher: Searcher<T>) {
+  if (!word) return list
+  return list.filter((item) => searcher(item, word))
+}
+
+/**
+ * 搜索器
+ */
+export type Searcher<T> = (item: T, word: string) => boolean
+
 /**
  * 关键词搜索，忽略大小写搜索指定对象属性的值
  */
 export function searchList<T>(
   list: Array<T>,
   word: string,
-  searchKeys: Array<keyof T>,
-  searcher?: Searcher<T>
+  searcher: Searcher<T>
 ): T[]
 /**
  * 多关键词搜索，忽略大小写搜索指定对象属性的值
@@ -78,58 +87,47 @@ export function searchList<T>(
 export function searchList<T>(
   list: Array<T>,
   words: string[],
-  searchKeys: Array<keyof T>,
-  searcher?: Searcher<T>
+  searcher: Searcher<T>
 ): T[]
 
 export function searchList<T>(
   list: Array<T>,
   words: string | string[],
-  searchKeys: Array<keyof T>,
-  searcher?: Searcher<T>
+  searcher: Searcher<T>
 ) {
-  if (!Array.isArray(words)) return search(list, words, searchKeys, searcher)
+  if (!Array.isArray(words)) return search(list, words, searcher)
 
   let filteredList: Array<T> = list
   for (const word of words) {
-    filteredList = search(filteredList, word, searchKeys, searcher)
+    filteredList = search(filteredList, word, searcher)
   }
   return filteredList
 }
 
-export type Searcher<T> = (
-  item: T,
+/**
+ * 实体搜索器
+ */
+export function entitySearcher<T>(
   word: string,
-  searchKeys: Array<keyof T>
-) => boolean
-
-function search<T>(
-  list: Array<T>,
-  word: string,
-  searchKeys: Array<keyof T>,
-  searcher?: Searcher<T>
-) {
-  if (!word) return list
-  if (!searcher) {
-    word = word.toLowerCase()
-    searcher = (item, word, searchKeys) => {
-      for (const key of searchKeys) {
-        const value = item[key]
-        if (typeof value === 'string' && value.toLowerCase().includes(word)) {
-          return true
-        }
+  keys: Array<keyof T>
+): Searcher<T> {
+  word = word.toLowerCase()
+  return (item, word) => {
+    for (const key of keys) {
+      const value = item[key]
+      if (typeof value === 'string' && value.toLowerCase().includes(word)) {
+        return true
       }
-      return false
     }
+    return false
   }
-  return list.filter((item) => searcher?.(item, word, searchKeys))
 }
 
 /**
  * 关键词搜索，忽略大小写搜索 `title` 和 `description`
  */
 export function searchListItems(listItems: Array<ListItem>, word: string) {
-  return search(listItems, word, ['title', 'description'])
+  return search(listItems, word, entitySearcher(word, ['title', 'description']))
 }
 
 class TemplateBuilder {
