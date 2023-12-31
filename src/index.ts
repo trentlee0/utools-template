@@ -1,4 +1,5 @@
 export * from './common'
-export * from './template'
+export * from './search'
 export * from './storage'
+export * from './template'
 export * from './type'

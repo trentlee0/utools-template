@@ -1,3 +1,4 @@
+import { entitySearcher, searchList } from './search'
 import { Action, ListItem, ListRenderFunction, TemplateExports } from './type'
 
 interface Template {
@@ -63,68 +64,12 @@ export interface MutableListTemplate extends ListTemplate {
   select(action: Action, item: ListItem): void
 }
 
-function search<T>(list: Array<T>, word: string, searcher: Searcher<T>) {
-  if (!word) return list
-  return list.filter((item) => searcher(item, word))
-}
-
-/**
- * 搜索器
- */
-export type Searcher<T> = (item: T, word: string) => boolean
-
-/**
- * 关键词搜索，忽略大小写搜索指定对象属性的值
- */
-export function searchList<T>(
-  list: Array<T>,
-  word: string,
-  searcher: Searcher<T>
-): T[]
-/**
- * 多关键词搜索，忽略大小写搜索指定对象属性的值
- */
-export function searchList<T>(
-  list: Array<T>,
-  words: string[],
-  searcher: Searcher<T>
-): T[]
-
-export function searchList<T>(
-  list: Array<T>,
-  words: string | string[],
-  searcher: Searcher<T>
-) {
-  if (!Array.isArray(words)) return search(list, words, searcher)
-
-  let filteredList: Array<T> = list
-  for (const word of words) {
-    filteredList = search(filteredList, word, searcher)
-  }
-  return filteredList
-}
-
-/**
- * 实体搜索器
- */
-export function entitySearcher<T>(keys: Array<keyof T>): Searcher<T> {
-  return (item, word) => {
-    word = word.toLowerCase()
-    for (const key of keys) {
-      const value = item[key]
-      if (typeof value === 'string' && value.toLowerCase().includes(word)) {
-        return true
-      }
-    }
-    return false
-  }
-}
 
 /**
  * 关键词搜索，忽略大小写搜索 `title` 和 `description`
  */
 export function searchListItems(listItems: Array<ListItem>, word: string) {
-  return search(listItems, word, entitySearcher(['title', 'description']))
+  return searchList(listItems, word, entitySearcher(['title', 'description']))
 }
 
 class TemplateBuilder {
