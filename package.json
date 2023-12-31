@@ -1,7 +1,7 @@
 {
   "name": "utools-utils",
   "description": "Common utilities for uTools",
-  "version": "1.1.13",
+  "version": "1.1.14",
   "author": "Trent Lee",
   "scripts": {
     "test": "vitest run",
