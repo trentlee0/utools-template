@@ -1,5 +1,7 @@
 import {
   exec,
+  execFile,
+  execFileSync,
   ExecOptions,
   spawn,
   SpawnOptionsWithoutStdio
@@ -76,22 +78,28 @@ export async function execPowerShell(script: string) {
   return await execCommand(script, { shell: 'powershell.exe' })
 }
 
-function escape(s: string) {
-  return s.replaceAll(/"/g, '\\"')
+/**
+ * 执行 AppleScript 脚本
+ * @param script  脚本
+ */
+export async function execAppleScript(script: string) {
+  return new Promise<CommandReturn>((resolve, reject) => {
+    const child = execFile('osascript', ['-e', script], (err, stdout) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve({ stdout: stdout.toString(), kill: () => child.kill() })
+      }
+    })
+  })
 }
 
 /**
  * 执行 AppleScript 脚本
  * @param script  脚本
- * @param requiredEscape 是否需要转义字符 `"`，默认为 `true`
  */
-export async function execAppleScript(
-  script: string,
-  requiredEscape: boolean = true
-) {
-  return await execCommand(
-    `osascript -e "${requiredEscape ? escape(script) : script}"`
-  )
+export function execAppleScriptSync(script: string) {
+  return execFileSync('osascript', ['-e', script]).toString()
 }
 
 /**
